@@ -8,13 +8,23 @@ namespace Player.Camera
     [Serializable]
     public class PlayerCamera
     {
-        [field: SerializeField] private CameraType CameraType { get; set; }
+        [field: SerializeField] public CameraType CameraType { get; private set; }
         
-        [field: SerializeField] private CinemachineCamera Camera { get; set; }
+        [field: SerializeField] public CinemachineCamera Camera { get; private set; }
         
         [SerializeField] private List<AvailableCameras> availableCameras;
         
         public IReadOnlyList<AvailableCameras> AvailableCameras => availableCameras;
+        
+        public void Activate()
+        {
+            Camera.gameObject.SetActive(true);
+        }
+
+        public void Deactivate()
+        {
+            Camera.gameObject.SetActive(false);
+        }
     }
 
     [Serializable]

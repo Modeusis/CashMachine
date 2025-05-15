@@ -117,6 +117,15 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""f134dd53-dce8-47ea-bc97-36d1e639deb8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -196,6 +205,17 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
                     ""action"": ""Break"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""429b15d3-ff3b-42c7-b835-b3453e0061c2"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -207,6 +227,7 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         m_main_Click = m_main.FindAction("Click", throwIfNotFound: true);
         m_main_Move = m_main.FindAction("Move", throwIfNotFound: true);
         m_main_Break = m_main.FindAction("Break", throwIfNotFound: true);
+        m_main_CameraMovement = m_main.FindAction("CameraMovement", throwIfNotFound: true);
     }
 
     ~@BaseInput()
@@ -290,6 +311,7 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_main_Click;
     private readonly InputAction m_main_Move;
     private readonly InputAction m_main_Break;
+    private readonly InputAction m_main_CameraMovement;
     /// <summary>
     /// Provides access to input actions defined in input action map "main".
     /// </summary>
@@ -313,6 +335,10 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "main/Break".
         /// </summary>
         public InputAction @Break => m_Wrapper.m_main_Break;
+        /// <summary>
+        /// Provides access to the underlying input action "main/CameraMovement".
+        /// </summary>
+        public InputAction @CameraMovement => m_Wrapper.m_main_CameraMovement;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -348,6 +374,9 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
             @Break.started += instance.OnBreak;
             @Break.performed += instance.OnBreak;
             @Break.canceled += instance.OnBreak;
+            @CameraMovement.started += instance.OnCameraMovement;
+            @CameraMovement.performed += instance.OnCameraMovement;
+            @CameraMovement.canceled += instance.OnCameraMovement;
         }
 
         /// <summary>
@@ -368,6 +397,9 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
             @Break.started -= instance.OnBreak;
             @Break.performed -= instance.OnBreak;
             @Break.canceled -= instance.OnBreak;
+            @CameraMovement.started -= instance.OnCameraMovement;
+            @CameraMovement.performed -= instance.OnCameraMovement;
+            @CameraMovement.canceled -= instance.OnCameraMovement;
         }
 
         /// <summary>
@@ -429,5 +461,12 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBreak(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CameraMovement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCameraMovement(InputAction.CallbackContext context);
     }
 }

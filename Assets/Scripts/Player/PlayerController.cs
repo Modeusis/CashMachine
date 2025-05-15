@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
 using Player.Camera;
 using Player.PlayerStates;
 using Unity.Cinemachine;
@@ -17,16 +16,19 @@ namespace Player
         
         private EventBus _eventBus;
         
+        [Header("RaycastLayers")]
+        [SerializeField] private LayerMask firstPersonLayerMask;
+        [SerializeField] private LayerMask toggleLayerMask;
+        
         [Header("Dependencies")]
         [SerializeField] private CharacterController playerController;
 
         [SerializeField] private CinemachineCamera playerCamera;
         
         [SerializeField] private List<PlayerCamera> cashMachineCameras;
-        private IReadOnlyList<PlayerCamera> Cameras => cashMachineCameras;
         
         [Header("Settings")]
-        [SerializeField] private PlayerCharacteristics characteristics;
+        [SerializeField] private PlayerCharacteristics playerCharacteristics;
 
         private FSM _fsm;
         
@@ -38,20 +40,19 @@ namespace Player
             _input = input;
             
             _eventBus = eventBus;
-            _eventBus.Subscribe<CameraType>(HandleCameraChange);
-
-            
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new PlayerFirstPersonState(StateType.Idle, _input, playerCamera, playerController) },
-                { StateType.Active, new PlayerToggledState(StateType.Active, _input, Cameras) },
+                { StateType.Idle, new PlayerFirstPersonState(StateType.Idle, _input, playerCamera, playerController, playerCharacteristics, firstPersonLayerMask) },
+                { StateType.Active, new PlayerToggledState(StateType.Active, _input, cashMachineCameras, playerCharacteristics.RaycastDistance, toggleLayerMask) },
                 { StateType.Locked, new PlayerLockedState(StateType.Locked) },
             };
 
             var transitions = new List<Transition>()
             {
-                
+                new Transition(StateType.Idle, StateType.Active, () => _eventBus.WasCalledThisFrame<CameraToggle>()),
+                new Transition(StateType.Active, StateType.Idle, () => _input.main.Break.WasPressedThisFrame()),
+                new Transition(StateType.Any, StateType.Locked, () => _eventBus.WasCalledThisFrame<CameraBlocker>()),
             };
             
             _fsm = new FSM(states, transitions, StateType.Idle);
@@ -65,14 +66,6 @@ namespace Player
         private void LateUpdate()
         {
             _fsm?.LateUpdate();
-        }
-
-        private void HandleCameraChange(CameraType cameraType)
-        {
-            if (cameraType == _currentCameraType)
-                return;
-            
-            _currentCameraType = cameraType;
         }
     }
 }
