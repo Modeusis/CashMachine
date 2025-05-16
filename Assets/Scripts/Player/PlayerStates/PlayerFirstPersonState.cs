@@ -67,8 +67,7 @@ namespace Player.PlayerStates
 
         private void HandleMove(Vector2 move)
         {
-            Vector3 direction = (_playerController.transform.forward * move.y + 
-                                 _playerController.transform.right * move.x).normalized;
+            Vector3 direction = _playerController.transform.forward * move.y + _playerController.transform.right * move.x;
     
             Vector3 movement = direction * _stats.Speed;
             
@@ -77,7 +76,7 @@ namespace Player.PlayerStates
 
         private void HandleCamera(Vector2 cameraInput)
         {
-            cameraInput = cameraInput.normalized;
+            // cameraInput = cameraInput.normalized;
             
             var playerRotate = Vector3.up * (cameraInput.x * _stats.CameraSpeed);
             

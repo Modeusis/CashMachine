@@ -1,3 +1,4 @@
+using Interactables;
 using UI;
 using UnityEngine;
 using Utilities.EventBus;
@@ -5,7 +6,7 @@ using Zenject;
 
 namespace CashMachine
 {
-    public class CashMachineButton : MonoBehaviour
+    public class CashMachineButton : MonoBehaviour, IInteractable
     {
         private EventBus _eventBus;
         

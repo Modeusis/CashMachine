@@ -10,13 +10,11 @@ namespace CashMachine.CashMachineStates
         
         private Card _currentCard;
         
-        public InsertCardCashMachineState(StateType stateType, EventBus eventBus, Card currentCard)
+        public InsertCardCashMachineState(StateType stateType, EventBus eventBus)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
-            
-            _currentCard = currentCard;
         }
         
         public override void Enter()
@@ -27,7 +25,13 @@ namespace CashMachine.CashMachineStates
 
         public override void Update()
         {
-            
+            if (_currentCard == null)
+                return;
+
+            if (_currentCard.IsInserted())
+            {
+                _eventBus.Publish(ScreenType.InputPin);
+            }
         }
 
         public override void Exit()
@@ -37,14 +41,12 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            if (buttonType == ButtonType.ScreenButton11)
+            if (buttonType == ButtonType.ScreenButton14)
             {
                 _eventBus.Publish(new ToPrevious());
                 
                 return;
             }
-            
-            CallOperation(buttonType);
         }
         
         private void HandleCardInsert(Card card)
@@ -52,25 +54,6 @@ namespace CashMachine.CashMachineStates
             _currentCard = card;
             
             card.InsertCard();
-        }
-
-        private void CallOperation(ButtonType buttonType)
-        {
-            switch (buttonType)
-            {
-                case ButtonType.ScreenButton14:
-                {
-                    _eventBus.Publish(ScreenType.GetMoney);
-                    
-                    break;
-                }
-                case ButtonType.ScreenButton24:
-                {
-                    _eventBus.Publish(ScreenType.CheckBalance);
-                    
-                    break;
-                }
-            }
         }
     }
 }

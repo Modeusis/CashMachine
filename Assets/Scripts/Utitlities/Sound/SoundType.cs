@@ -8,6 +8,7 @@ namespace Sounds
         MoneyGet = 3,
         NumInput = 4,
         ButtonPress = 5,
-        UiButton = 6,
+        ErrorSound = 6,
+        ChequeSound = 7,
     }
 }
