@@ -7,11 +7,15 @@ namespace CashMachine.CashMachineStates
     {
         private readonly EventBus _eventBus;
         
-        public InsertCardCashMachineState(StateType stateType, EventBus eventBus)
+        private readonly Card _card;
+        
+        public InsertCardCashMachineState(StateType stateType, EventBus eventBus, Card card)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _card = card;
         }
         
         public override void Enter()

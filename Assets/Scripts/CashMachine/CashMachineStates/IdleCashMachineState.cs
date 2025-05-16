@@ -19,7 +19,7 @@ namespace CashMachine.CashMachineStates
         
         public override void Enter()
         {
-            
+            _eventBus.Subscribe<ButtonType>(HandleScreenChange);
         }
 
         public override void Update()
@@ -29,12 +29,15 @@ namespace CashMachine.CashMachineStates
 
         public override void Exit()
         {
-            
+            _eventBus.Unsubscribe<ButtonType>(HandleScreenChange);
         }
 
         private void HandleScreenChange(ButtonType buttonType)
         {
-            
+            if (buttonType == ButtonType.ScreenButton14)
+            {
+                _eventBus.Publish(ScreenType.InsertCard);
+            }
         }
     }
 }

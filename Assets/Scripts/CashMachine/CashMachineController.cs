@@ -13,6 +13,8 @@ namespace CashMachine
     public class CashMachineController : MonoBehaviour
     {
         [SerializeField] private List<ScreenSetup> screens;
+
+        [SerializeField] private Card card;
         
         private EventBus _eventBus;
         
@@ -29,7 +31,7 @@ namespace CashMachine
             var states = new Dictionary<StateType, State>()
             {
                 { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus)},
-                { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus)},
+                { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
                 { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
                 { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
@@ -63,6 +65,9 @@ namespace CashMachine
 
         private void HandleScreenChange(ScreenType screenType)
         {
+            if (screenType == _currentScreen.ScreenType)
+                return;
+            
             var newScreen = screens.First(screen => screen.ScreenType == screenType);
             
             _currentScreen.Deactivate();
