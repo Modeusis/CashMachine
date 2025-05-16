@@ -6,8 +6,12 @@ namespace Player
     [Serializable]
     public class PlayerCharacteristics
     {
-        [field: SerializeField] public float Speed { get; private set; }
+        [SerializeField] private float speed = 10f;
+        public float Speed => speed * Time.deltaTime;
         
-        [field: SerializeField] public float CameraSpeed { get; private set; }
+        [SerializeField] public float cameraSpeed = 10f;
+        public float CameraSpeed => cameraSpeed * Time.deltaTime;
+
+        [field: SerializeField] public float RaycastDistance { get; private set; } = 3f;
     }
 }
