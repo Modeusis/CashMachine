@@ -13,8 +13,6 @@ namespace CashMachine
     public class CashMachineController : MonoBehaviour
     {
         [SerializeField] private List<ScreenSetup> screens;
-
-        private BaseInput _input;
         
         private EventBus _eventBus;
         
@@ -23,22 +21,20 @@ namespace CashMachine
         private ScreenSetup _currentScreen;
         
         [Inject]
-        private void Initialize(BaseInput input, EventBus eventBus)
+        private void Initialize(EventBus eventBus)
         {
-            _input = input;
-            
             _eventBus = eventBus;
             _eventBus.Subscribe<ScreenType>(HandleScreenChange);
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle , new IdleCashMachineState(StateType.Idle, _eventBus)},
-                { StateType.InsertCard , new InsertCardCashMachineState(StateType.InsertCard)},
-                { StateType.InputPin , new InputPinCashMachineState(StateType.InputPin)},
-                { StateType.ChooseOperation , new ChooseOperationCashMachineState(StateType.ChooseOperation)},
-                { StateType.GetBalance , new GetBalanceCashMachineState(StateType.GetBalance)},
-                { StateType.GetMoney , new GetMoneyCashMachineState(StateType.GetMoney)},
-                { StateType.Finish , new FinishCashMachineState(StateType.Finish)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus)},
+                { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus)},
+                { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
+                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
+                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus)},
+                { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
 
             var transitions = new List<Transition>()
