@@ -20,6 +20,7 @@ namespace CashMachine
         
         private FSM _cashMachineFSM;
         
+        private ScreenSetup _previousScreen;
         private ScreenSetup _currentScreen;
         
         [Inject]
@@ -27,6 +28,7 @@ namespace CashMachine
         {
             _eventBus = eventBus;
             _eventBus.Subscribe<ScreenType>(HandleScreenChange);
+            _eventBus.Subscribe<ToPrevious>(HandleToPreviousScreen);
             
             var states = new Dictionary<StateType, State>()
             {
@@ -43,11 +45,12 @@ namespace CashMachine
             {
                 new(StateType.Idle, StateType.InsertCard, () => _currentScreen.ScreenType == ScreenType.InsertCard),
                 new(StateType.InsertCard, StateType.InputPin, () => _currentScreen.ScreenType == ScreenType.InputPin),
-                new(StateType.InputPin, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
+                new(StateType.InputPin, StateType.ChooseOperation, () => _eventBus.WasCalledThisFrame<Card>()),
                 new(StateType.ChooseOperation, StateType.GetBalance, () => _currentScreen.ScreenType == ScreenType.CheckBalance),
                 new(StateType.ChooseOperation, StateType.GetMoney, () => _currentScreen.ScreenType == ScreenType.GetMoney),
                 new(StateType.GetMoney, StateType.Finish, () => _currentScreen.ScreenType == ScreenType.Finish),
-                new(StateType.Any, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                new(StateType.GetBalance, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                new(StateType.Any, StateType.Previous, () => _eventBus.WasCalledThisFrame<ToPrevious>())
             };
 
             _cashMachineFSM = new FSM(states, transitions, StateType.Idle);
@@ -71,8 +74,21 @@ namespace CashMachine
             var newScreen = screens.First(screen => screen.ScreenType == screenType);
             
             _currentScreen.Deactivate();
-            
+
+            _previousScreen = _currentScreen;
             _currentScreen = newScreen;
+            
+            _currentScreen.Activate();
+        }
+
+        private void HandleToPreviousScreen(ToPrevious toPrevious)
+        {
+            if (_previousScreen == null)
+                return;
+            
+            _currentScreen.Deactivate();
+            
+            _currentScreen = _previousScreen;
             
             _currentScreen.Activate();
         }

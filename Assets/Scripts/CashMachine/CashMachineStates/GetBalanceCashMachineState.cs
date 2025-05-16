@@ -1,3 +1,4 @@
+using TMPro;
 using Utilities.EventBus;
 using Utilities.FSM;
 
@@ -6,6 +7,10 @@ namespace CashMachine.CashMachineStates
     public class GetBalanceCashMachineState : State
     {
         private readonly EventBus _eventBus;
+        
+        private Card _currentCard;
+        
+        private TMP_Text _cardBalanceText;
         
         public GetBalanceCashMachineState(StateType stateType, EventBus eventBus)
         {

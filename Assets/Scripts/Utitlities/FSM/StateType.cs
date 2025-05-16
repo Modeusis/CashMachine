@@ -11,6 +11,7 @@
         GetBalance = 6,
         GetMoney = 7,
         Finish = 8,
-        Any
+        Any,
+        Previous
     }
 }
