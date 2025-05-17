@@ -13,11 +13,15 @@ namespace Interactables
         
         [SerializeField] private string tooltipString = "Нажмите лкм, чтобы забрать деньги";
 
-        public void Initialize(EventBus eventBus, Tooltip tooltip)
+        private float _moneyValue;
+        
+        public void Initialize(EventBus eventBus, Tooltip tooltip, float moneyValue)
         {
             _eventBus = eventBus;
                 
             _tooltip = tooltip;
+            
+            _moneyValue = moneyValue;
         }
         
         public void Focus()
@@ -32,6 +36,8 @@ namespace Interactables
 
         public void Interact()
         {
+            _eventBus.Publish(_moneyValue);
+            
             _eventBus.Publish(InteractionType.Money);
         }
     }

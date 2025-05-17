@@ -8,6 +8,7 @@ namespace CashMachine
         
         [SerializeField] private float startBalance;
         
+        
         private float _currentBalance;
         
         private bool _isReadyToInsert = false;
@@ -31,14 +32,11 @@ namespace CashMachine
             _isTaken = false;
         }
 
-        public bool GetMoney(float value)
+        public float GetMoney(float value)
         {
-            if (value > _currentBalance)
-                return false;
-            
             _currentBalance -= value;
-
-            return true;
+            
+            return value;
         }
         
         public void RemoveCard()

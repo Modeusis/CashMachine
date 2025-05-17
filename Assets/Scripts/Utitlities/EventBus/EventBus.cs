@@ -48,14 +48,7 @@ namespace Utilities.EventBus
             {
                 foreach (var action  in actions)
                 {
-                    try
-                    {
-                        ((Action<T>)action).Invoke(eventData);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError($"Event bust {typeof(T)} call error: {e.Message}");
-                    }
+                    ((Action<T>)action).Invoke(eventData);
                 }
             }
         }

@@ -40,9 +40,14 @@ namespace Animations
         
         private GameObject _moneyInstance;
 
-        private void Awake()
+        private float _moneyValue;
+
+        public void SetMoney(float moneyValue)
         {
-            _eventBus.Subscribe<InteractionType>(HandleTakeMoney);
+            if (moneyValue <= 0)
+                return;
+            
+            _moneyValue = moneyValue;
         }
         
         public void HandleTakeMoney(InteractionType interactionType)
@@ -61,11 +66,8 @@ namespace Animations
             _isSpawned = false;
         }
         
-        public void HandleMoneyCall(InteractionType interactionType)
+        public void HandleMoneyCall()
         {
-            if (interactionType != InteractionType.MoneyLock)
-                return;
-            
             if (_isSpawned)
                 return;
             
@@ -87,6 +89,9 @@ namespace Animations
 
         private void SpawnMoney()
         {
+            if (_moneyValue <= 0)
+                return;
+            
             _eventBus.Unsubscribe<InteractionType>(HandleTakeMoney);
             
             _moneyInstance = Instantiate(moneyPrefab, transform);
@@ -97,9 +102,11 @@ namespace Animations
             _moneyInstance.transform.localRotation = Quaternion.identity;
 
             _moneyInstance.AddComponent<BoxCollider>();
-            var _moneyInteraction = _moneyInstance.AddComponent<MoneyInteraction>();
             
-            _moneyInteraction.Initialize(_eventBus, _tooltip);
+            var moneyInteraction = _moneyInstance.AddComponent<MoneyInteraction>();
+            moneyInteraction.Initialize(_eventBus, _tooltip, _moneyValue);
+
+            _moneyValue = 0f;
         }
     }
 }

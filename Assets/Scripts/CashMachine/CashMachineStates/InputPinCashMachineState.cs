@@ -90,8 +90,6 @@ namespace CashMachine.CashMachineStates
             {
                 CurrentPin = string.Empty;
                 
-                _errorPinView.text = "Неверный пин код, кол-во попыток " + _currentAttempts;
-                
                 return;
             }
             
@@ -102,10 +100,12 @@ namespace CashMachine.CashMachineStates
                     if (_currentAttempts <= 0)
                     {
                         _eventBus.Publish(ScreenType.Idle);
-                    
+                        
                         return;
                     }
                 
+                    _errorPinView.text = "Неверный пин код, кол-во попыток " + _currentAttempts;
+                    
                     _currentAttempts--;
                 
                     CurrentPin = String.Empty;
@@ -117,8 +117,15 @@ namespace CashMachine.CashMachineStates
                 
                 return;
             }
+
+            var tempNum = GetNumFromButton(buttonType);
+
+            if (string.IsNullOrEmpty(tempNum))
+            {
+                return;
+            }
             
-            CurrentPin += GetNumFromButton(buttonType);
+            CurrentPin += tempNum;
         }
 
         private bool ValidatePin()
@@ -127,7 +134,6 @@ namespace CashMachine.CashMachineStates
             {
                 return false;
             }
-                
             
             return true;
         }

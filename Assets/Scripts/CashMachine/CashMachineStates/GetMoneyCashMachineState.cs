@@ -1,5 +1,7 @@
 using Animations;
+using CashMachine.Screens;
 using TMPro;
+using UnityEngine;
 using Utilities.EventBus;
 using Utilities.FSM;
 
@@ -10,31 +12,56 @@ namespace CashMachine.CashMachineStates
         private readonly EventBus _eventBus;
 
         private readonly Card _card;
-
-        private readonly MoneyAnimationHandler _moneyHandler;
         
         private readonly TMP_Text _moneyTextField;
+        private readonly TMP_Text _errorTextField;
+
+        private readonly MoneyAnimationHandler _moneyAnimationHandler;
+        
+        private float _moneyInput;
         
         private string CurrentValue
         {
-            get => _moneyTextField.text;
+            get => _moneyInput.ToString();
             set
             {
-                _moneyTextField.text = value;
+                Debug.Log(value);
+                
+                if (string.IsNullOrEmpty(value))
+                {
+                    _moneyInput = 0;
+                    
+                    _moneyTextField.text = "Введите сумму";
+                    
+                    return;
+                }
+                
+                _moneyInput = float.Parse(value);
+                
+                _moneyTextField.text = value + " BYN";
             }
         }
         
-        public GetMoneyCashMachineState(StateType stateType, EventBus eventBus, TMP_Text moneyTextField)
+        public GetMoneyCashMachineState(StateType stateType, EventBus eventBus, TMP_Text moneyTextField, TMP_Text errorTextField,
+            Card card, MoneyAnimationHandler moneyAnimationHandler)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
             
             _moneyTextField = moneyTextField;
+            _errorTextField = errorTextField;
+            
+            _moneyAnimationHandler = moneyAnimationHandler;
+            
+            _card = card;
         }
         
         public override void Enter()
         {
+            CurrentValue = "";
+            _errorTextField.text = "";
+            
             _eventBus.Subscribe<ButtonType>(HandleButtonInput);
         }
 
@@ -50,8 +77,50 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            // if (buttonType == )
+            if (buttonType == ButtonType.NumCancel)
+            {
+                CurrentValue = "";
+                
+                return;
+            }
+            
+            if (buttonType == ButtonType.NumClear)
+            {
+                CurrentValue = CurrentValue.Remove(CurrentValue.Length - 1);
+                
+                return;
+            }
+            
+            if (buttonType == ButtonType.ScreenButton14)
+            {
+                _eventBus.Publish(ScreenType.ChooseOperation);
+                
+                return;
+            }
+            
+            if (buttonType == ButtonType.NumConfirm || buttonType == ButtonType.ScreenButton24)
+            {
+                if (!ValidateInput())
+                {
+                    _errorTextField.text = "Недостаточно средств";
+                    
+                    return;
+                }
 
+                _moneyAnimationHandler.SetMoney(_card.GetMoney(_moneyInput));
+                _moneyAnimationHandler.HandleMoneyCall();
+                
+                _eventBus.Publish(ScreenType.Finish);
+            }
+
+            var tempValue = GetNumFromButton(buttonType);
+
+            if (string.IsNullOrEmpty(tempValue))
+            {
+                return;
+            }
+                
+            
             CurrentValue += GetNumFromButton(buttonType);
         }
         
@@ -130,6 +199,16 @@ namespace CashMachine.CashMachineStates
             }
             
             return key;
+        }
+
+        private bool ValidateInput()
+        {
+            if (_card.CurrentBalance() < _moneyInput)
+            {
+                return false;
+            }
+            
+            return true;
         }
     }
 }

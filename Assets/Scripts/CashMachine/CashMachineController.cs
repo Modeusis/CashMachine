@@ -22,14 +22,18 @@ namespace CashMachine
         [Header("Input fields")]
         [SerializeField] private TMP_Text pinView;
         [SerializeField] private TMP_Text moneyView;
+        [SerializeField] private TMP_Text balanceView;
         
         [Header("Error messages")]
         [SerializeField] private TMP_Text idleErrorField;
-        [SerializeField] private TMP_Text finishErrorField;
+        [SerializeField] private TMP_Text getMoneyErrorField;
         [SerializeField] private TMP_Text pinErrorField;
         
         [Header("Settings")]
         [SerializeField] private int pinAttemptsAmount = 3;
+        
+        [Header("Money animation handler")]
+        [SerializeField] private MoneyAnimationHandler moneyAnimationHandler;
         
         private EventBus _eventBus;
         
@@ -51,8 +55,8 @@ namespace CashMachine
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
                 { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
-                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
-                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView)},
+                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card)},
+                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView, getMoneyErrorField, card, moneyAnimationHandler)},
                 { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
 
