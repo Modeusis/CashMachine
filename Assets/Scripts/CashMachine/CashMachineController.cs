@@ -16,16 +16,25 @@ namespace CashMachine
     {
         [SerializeField] private List<ScreenSetup> screens;
 
+        [Header("Card")]
         [SerializeField] private Card card;
         
+        [Header("Input fields")]
         [SerializeField] private TMP_Text pinView;
         [SerializeField] private TMP_Text moneyView;
+        
+        [Header("Error messages")]
+        [SerializeField] private TMP_Text idleErrorField;
+        [SerializeField] private TMP_Text finishErrorField;
+        [SerializeField] private TMP_Text pinErrorField;
+        
+        [Header("Settings")]
+        [SerializeField] private int pinAttemptsAmount = 3;
         
         private EventBus _eventBus;
         
         private FSM _cashMachineFSM;
-        
-        private ScreenSetup _previousScreen;
+
         private ScreenSetup _currentScreen;
         
         [Inject]
@@ -38,9 +47,9 @@ namespace CashMachine
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, card)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card)},
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
-                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, card)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
                 { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
                 { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView)},
@@ -89,8 +98,7 @@ namespace CashMachine
             var newScreen = screens.First(screen => screen.ScreenType == screenType);
             
             _currentScreen?.Deactivate();
-
-            _previousScreen = _currentScreen;
+            
             _currentScreen = newScreen;
             
             _currentScreen?.Activate();

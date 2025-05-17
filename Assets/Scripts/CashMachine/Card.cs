@@ -12,6 +12,7 @@ namespace CashMachine
         
         private bool _isReadyToInsert = false;
         private bool _isInserted = false;
+        private bool _isTaken = true;
 
         private void Awake()
         {
@@ -26,6 +27,8 @@ namespace CashMachine
         public void InsertCard()
         {
             _isInserted = true;
+            
+            _isTaken = false;
         }
 
         public bool GetMoney(float value)
@@ -43,8 +46,14 @@ namespace CashMachine
             _isInserted = false;
         }
         
+        public void TakeCard()
+        {
+            _isTaken = true;
+        }
+        
         public bool IsInserted() => _isInserted;
         public bool IsReady() => _isReadyToInsert;
+        public bool IsTaken() => _isTaken;
         
         public float CurrentBalance() => _currentBalance;
         

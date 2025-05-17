@@ -7,6 +7,6 @@
         CardSlot = 2,
         GetCard = 3,
         SpawnMoney = 4,
-        Card = 5,
+        RemoveCard = 5,
     }
 }

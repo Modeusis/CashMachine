@@ -74,7 +74,7 @@ namespace Animations
                     {
                         card.InsertCard();
                         
-                        _eventBus.Publish(new CameraUnblocker());
+                        // _eventBus.Publish(new CameraUnblocker());
                     });
             });
         }
@@ -94,6 +94,8 @@ namespace Animations
         {
             transform.DOKill();
             
+            card.TakeCard();
+            
             cardInteractionHandler.Deactivate();
             
             transform.SetParent(player.transform);
@@ -106,7 +108,7 @@ namespace Animations
         {
             switch (interaction)
             {
-                case InteractionType.Card:
+                case InteractionType.RemoveCard:
                 { 
                     RemoveCard();
                     
