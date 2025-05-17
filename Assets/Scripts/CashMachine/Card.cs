@@ -10,16 +10,18 @@ namespace CashMachine
         
         private float _currentBalance;
         
+        private bool _isReadyToInsert = false;
         private bool _isInserted = false;
-        
-        public string GetPin() => cardPin.ToString();
-        public float CurrentBalance() => _currentBalance;
-        public bool IsInserted() => _isInserted;
 
         private void Awake()
         {
             _currentBalance = startBalance;
         }
+        
+        public void SetReady(bool isReadyToInsert)
+        {
+            _isReadyToInsert = isReadyToInsert;
+        } 
         
         public void InsertCard()
         {
@@ -35,15 +37,17 @@ namespace CashMachine
 
             return true;
         }
-
+        
         public void RemoveCard()
         {
             _isInserted = false;
         }
-
-        public void TakeCard()
-        {
-            
-        }
+        
+        public bool IsInserted() => _isInserted;
+        public bool IsReady() => _isReadyToInsert;
+        
+        public float CurrentBalance() => _currentBalance;
+        
+        public string GetPin() => cardPin.ToString();
     }
 }

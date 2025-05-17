@@ -27,11 +27,13 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public InputPinCashMachineState(StateType stateType, EventBus eventBus, Card card)
+        public InputPinCashMachineState(StateType stateType, EventBus eventBus, TMP_Text pinView, Card card)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _currentPinView = pinView;
             
             _card = card;
         }
@@ -39,6 +41,8 @@ namespace CashMachine.CashMachineStates
         public override void Enter()
         {
             _eventBus.Subscribe<ButtonType>(HandleButtonInput);
+            
+            CurrentPin = string.Empty;
         }
 
         public override void Update()

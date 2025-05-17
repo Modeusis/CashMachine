@@ -12,7 +12,7 @@ namespace Interactables
         [Inject] private EventBus _eventBus;
         [Inject] private Tooltip _tooltip;
         
-        [SerializeField] private float clickTooltipDuration = 0.2f;
+        [SerializeField] private float clickTooltipDuration = 1f;
         
         [Header("Tooltips messages")]
         [SerializeField] private string tooltipString = "Затворка из которой выдаются деньги";
@@ -30,16 +30,7 @@ namespace Interactables
 
         public void Interact()
         {
-            StartCoroutine(TooltipCoroutine(clickTooltipDuration));
-        }
-
-        private IEnumerator TooltipCoroutine(float delay)
-        {
-            _tooltip.Show(clickTooltipString);
-            
-            yield return new WaitForSeconds(delay);
-            
-            _tooltip.Hide();
+            _tooltip.ShowAndHide(clickTooltipString, clickTooltipDuration);
         }
     }
 }

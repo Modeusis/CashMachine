@@ -22,17 +22,23 @@ namespace CashMachine.CashMachineStates
         public override void Enter()
         {
             _eventBus.Subscribe<ButtonType>(HandleButtonInput);
-            _eventBus.Subscribe<Card>(HandleCardInsert);
+
+            _card?.SetReady(true);
         }
 
         public override void Update()
         {
-            
+            if (_card.IsInserted())
+            {
+                _eventBus.Publish(ScreenType.InputPin);
+            }
         }
 
         public override void Exit()
         {
             _eventBus.Unsubscribe<ButtonType>(HandleButtonInput);
+            
+            _card?.SetReady(false);
         }
 
         private void HandleButtonInput(ButtonType buttonType)
@@ -41,13 +47,6 @@ namespace CashMachine.CashMachineStates
             {
                 _eventBus.Publish(ScreenType.Idle);
             }
-        }
-        
-        private void HandleCardInsert(Card card)
-        {
-            card.InsertCard();
-            
-            _eventBus.Publish(ScreenType.InputPin);
         }
     }
 }

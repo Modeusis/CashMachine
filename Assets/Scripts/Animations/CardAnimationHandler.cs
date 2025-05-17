@@ -1,8 +1,10 @@
-﻿using DG.Tweening;
+﻿using CashMachine;
+using DG.Tweening;
 using Interactables;
 using Player.Camera;
 using Sounds;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities.EventBus;
 using Zenject;
 
@@ -13,6 +15,10 @@ namespace Animations
         [Inject] private SoundService _soundService;
         [Inject] private EventBus _eventBus;
 
+        [SerializeField] private Card card;
+        [SerializeField] private CardInteractable cardInteractionHandler;
+        
+        [Header("Parents")]
         [SerializeField] private GameObject player;
         [SerializeField] private GameObject cardHolder;
         
@@ -38,40 +44,22 @@ namespace Animations
         
         private void Awake()
         {
-            _eventBus.Subscribe<InteractionType>(HandleCardInsert);
+            _eventBus.Subscribe<InteractionType>(HandleCardInteraction);
         }
 
         private void Start()
         {
             transform.SetParent(player.transform);
             
+            cardInteractionHandler.Deactivate();
+            
             transform.localPosition = cardInvisiblePosition;
             transform.localRotation = Quaternion.Euler(idleRotation);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                InsertCard();
-            }
-            
-            else if (Input.GetKeyDown(KeyCode.B))
-            {
-                GetCard();
-            }
-            
-            else if (Input.GetKeyDown(KeyCode.N))
-            {
-                RemoveCard();
-            }
         }
 
         private void InsertCard()
         {
             transform.DOKill();
-
-            var delay = toInsertDuration + insertDelay + Time.deltaTime;
             
             transform.DOLocalMove(cardShowedPosition, showDuration).OnComplete(() =>
             {
@@ -84,6 +72,8 @@ namespace Animations
                 transform.DOLocalMove(cardInsertedPosition, insertDuration).SetDelay(insertDelay).OnComplete(
                     () =>
                     {
+                        card.InsertCard();
+                        
                         _eventBus.Publish(new CameraUnblocker());
                     });
             });
@@ -93,6 +83,10 @@ namespace Animations
         {
             transform.DOKill();
             
+            card.RemoveCard();
+            
+            cardInteractionHandler.Activate();
+            
             transform.DOLocalMove(cardInsertPosition, removeDuration);
         }
 
@@ -100,15 +94,37 @@ namespace Animations
         {
             transform.DOKill();
             
+            cardInteractionHandler.Deactivate();
+            
             transform.SetParent(player.transform);
             
             transform.DOLocalMove(cardInvisiblePosition, getDuration);
             transform.DOLocalRotate(idleRotation, getDuration, RotateMode.FastBeyond360);
         }
         
-        private void HandleCardInsert(InteractionType interaction)
+        private void HandleCardInteraction(InteractionType interaction)
         {
-            
+            switch (interaction)
+            {
+                case InteractionType.Card:
+                { 
+                    RemoveCard();
+                    
+                    break;   
+                }
+                case InteractionType.CardSlot:
+                { 
+                    InsertCard();
+                    
+                    break;   
+                }
+                case InteractionType.GetCard:
+                { 
+                    GetCard();
+                    
+                    break;   
+                }
+            }
         }
     }
 }

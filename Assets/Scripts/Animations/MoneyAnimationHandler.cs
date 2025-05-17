@@ -39,6 +39,11 @@ namespace Animations
         private bool _isSpawned;
         
         private GameObject _moneyInstance;
+
+        private void Awake()
+        {
+            _eventBus.Subscribe<InteractionType>(HandleTakeMoney);
+        }
         
         public void HandleTakeMoney(InteractionType interactionType)
         {
@@ -56,8 +61,11 @@ namespace Animations
             _isSpawned = false;
         }
         
-        public void PlayMoneyAnimation()
+        public void HandleMoneyCall(InteractionType interactionType)
         {
+            if (interactionType != InteractionType.MoneyLock)
+                return;
+            
             if (_isSpawned)
                 return;
             
@@ -92,14 +100,6 @@ namespace Animations
             var _moneyInteraction = _moneyInstance.AddComponent<MoneyInteraction>();
             
             _moneyInteraction.Initialize(_eventBus, _tooltip);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                PlayMoneyAnimation();
-            }
         }
     }
 }

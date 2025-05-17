@@ -1,3 +1,5 @@
+using Animations;
+using TMPro;
 using Utilities.EventBus;
 using Utilities.FSM;
 
@@ -8,12 +10,27 @@ namespace CashMachine.CashMachineStates
         private readonly EventBus _eventBus;
 
         private readonly Card _card;
+
+        private readonly MoneyAnimationHandler _moneyHandler;
         
-        public GetMoneyCashMachineState(StateType stateType, EventBus eventBus)
+        private readonly TMP_Text _moneyTextField;
+        
+        private string CurrentValue
+        {
+            get => _moneyTextField.text;
+            set
+            {
+                _moneyTextField.text = value;
+            }
+        }
+        
+        public GetMoneyCashMachineState(StateType stateType, EventBus eventBus, TMP_Text moneyTextField)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _moneyTextField = moneyTextField;
         }
         
         public override void Enter()
@@ -34,6 +51,8 @@ namespace CashMachine.CashMachineStates
         private void HandleButtonInput(ButtonType buttonType)
         {
             // if (buttonType == )
+
+            CurrentValue += GetNumFromButton(buttonType);
         }
         
         private string GetNumFromButton(ButtonType buttonType)

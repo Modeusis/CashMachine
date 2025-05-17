@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Animations;
 using CashMachine.CashMachineStates;
 using CashMachine.Screens;
+using TMPro;
 using UnityEngine;
 using Utilities.EventBus;
 using Utilities.FSM;
@@ -15,6 +17,9 @@ namespace CashMachine
         [SerializeField] private List<ScreenSetup> screens;
 
         [SerializeField] private Card card;
+        
+        [SerializeField] private TMP_Text pinView;
+        [SerializeField] private TMP_Text moneyView;
         
         private EventBus _eventBus;
         
@@ -33,12 +38,12 @@ namespace CashMachine
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, card)},
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
-                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, card)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, card)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
                 { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
-                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus)},
+                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView)},
                 { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
 

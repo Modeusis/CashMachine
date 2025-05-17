@@ -1,4 +1,5 @@
 using CashMachine.Screens;
+using Interactables;
 using Utilities.EventBus;
 using Utilities.FSM;
 
@@ -9,8 +10,10 @@ namespace CashMachine.CashMachineStates
         private readonly EventBus _eventBus;
         
         private readonly ScreenSetup _screenSetup;
+
+        private readonly Card _card;
         
-        public IdleCashMachineState(StateType stateType, EventBus eventBus)
+        public IdleCashMachineState(StateType stateType, EventBus eventBus, Card card)
         {
             StateType = stateType;
             
@@ -20,6 +23,11 @@ namespace CashMachine.CashMachineStates
         public override void Enter()
         {
             _eventBus.Subscribe<ButtonType>(HandleScreenChange);
+
+            if (_card.IsInserted())
+            {
+                _eventBus.Publish(InteractionType.GetCard);
+            }
         }
 
         public override void Update()
