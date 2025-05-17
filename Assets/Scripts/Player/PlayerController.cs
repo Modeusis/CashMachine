@@ -52,7 +52,8 @@ namespace Player
             {
                 new Transition(StateType.Idle, StateType.Active, () => _eventBus.WasCalledThisFrame<CameraToggle>()),
                 new Transition(StateType.Active, StateType.Idle, () => _input.main.Break.WasPressedThisFrame()),
-                new Transition(StateType.Any, StateType.Locked, () => _eventBus.WasCalledThisFrame<CameraBlocker>()),
+                new Transition(StateType.Active, StateType.Locked, () => _eventBus.WasCalledThisFrame<CameraBlocker>()),
+                new Transition(StateType.Locked, StateType.Active, () => _eventBus.WasCalledThisFrame<CameraUnblocker>()),
             };
             
             _fsm = new FSM(states, transitions, StateType.Idle);

@@ -1,3 +1,4 @@
+using System;
 using CashMachine.Screens;
 using TMPro;
 using UnityEngine;
@@ -9,10 +10,15 @@ namespace CashMachine.CashMachineStates
     public class InputPinCashMachineState : State
     {
         private readonly EventBus _eventBus;
-
-        private Card _currentCard;
         
-        private TMP_Text _currentPinView;
+        private readonly int _attemptsAmount;
+        
+        private readonly Card _card;
+        
+        private readonly TMP_Text _currentPinView;
+        private readonly TMP_Text _errorPinView;
+        
+        private int _currentAttempts;
         
         private string _currentPin;
 
@@ -27,16 +33,29 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public InputPinCashMachineState(StateType stateType, EventBus eventBus)
+        public InputPinCashMachineState(StateType stateType, EventBus eventBus, TMP_Text pinView, TMP_Text errorPinView, Card card, int attemptsAmount)
         {
             StateType = stateType;
-
+            
             _eventBus = eventBus;
+            
+            _attemptsAmount = attemptsAmount;
+            
+            _currentPinView = pinView;
+            _errorPinView = errorPinView;
+            
+            _card = card;
         }
         
         public override void Enter()
         {
+            _currentAttempts = _attemptsAmount;
+            
+            _errorPinView.text = string.Empty;
+            
             _eventBus.Subscribe<ButtonType>(HandleButtonInput);
+            
+            CurrentPin = string.Empty;
         }
 
         public override void Update()
@@ -53,9 +72,9 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            if (buttonType == ButtonType.ScreenButton11)
+            if (buttonType == ButtonType.ScreenButton14)
             {
-                _eventBus.Publish(new ToPrevious());
+                _eventBus.Publish(ScreenType.Idle);
                 
                 return;
             }
@@ -74,20 +93,47 @@ namespace CashMachine.CashMachineStates
                 return;
             }
             
-            if (buttonType == ButtonType.NumConfirm && ValidatePin())
+            if (buttonType == ButtonType.NumConfirm)
             {
+                if (!ValidatePin())
+                {
+                    if (_currentAttempts <= 0)
+                    {
+                        _eventBus.Publish(ScreenType.Idle);
+                        
+                        return;
+                    }
+                
+                    _errorPinView.text = "Неверный пин код, кол-во попыток " + _currentAttempts;
+                    
+                    _currentAttempts--;
+                
+                    CurrentPin = String.Empty;
+                    
+                    return;
+                }
+                
                 _eventBus.Publish(ScreenType.ChooseOperation);
                 
                 return;
             }
+
+            var tempNum = GetNumFromButton(buttonType);
+
+            if (string.IsNullOrEmpty(tempNum))
+            {
+                return;
+            }
             
-            CurrentPin += GetNumFromButton(buttonType);
+            CurrentPin += tempNum;
         }
 
         private bool ValidatePin()
         {
-            if (_currentCard.GetPin() != _currentPin)
+            if (_card.GetPin() != CurrentPin)
+            {
                 return false;
+            }
             
             return true;
         }

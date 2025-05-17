@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Animations;
 using CashMachine.CashMachineStates;
 using CashMachine.Screens;
+using TMPro;
 using UnityEngine;
 using Utilities.EventBus;
 using Utilities.FSM;
@@ -14,13 +16,29 @@ namespace CashMachine
     {
         [SerializeField] private List<ScreenSetup> screens;
 
+        [Header("Card")]
         [SerializeField] private Card card;
+        
+        [Header("Input fields")]
+        [SerializeField] private TMP_Text pinView;
+        [SerializeField] private TMP_Text moneyView;
+        [SerializeField] private TMP_Text balanceView;
+        
+        [Header("Error messages")]
+        [SerializeField] private TMP_Text idleErrorField;
+        [SerializeField] private TMP_Text getMoneyErrorField;
+        [SerializeField] private TMP_Text pinErrorField;
+        
+        [Header("Settings")]
+        [SerializeField] private int pinAttemptsAmount = 3;
+        
+        [Header("Money animation handler")]
+        [SerializeField] private MoneyAnimationHandler moneyAnimationHandler;
         
         private EventBus _eventBus;
         
         private FSM _cashMachineFSM;
-        
-        private ScreenSetup _previousScreen;
+
         private ScreenSetup _currentScreen;
         
         [Inject]
@@ -28,29 +46,42 @@ namespace CashMachine
         {
             _eventBus = eventBus;
             _eventBus.Subscribe<ScreenType>(HandleScreenChange);
-            _eventBus.Subscribe<ToPrevious>(HandleToPreviousScreen);
+            
+            HandleScreenChange(ScreenType.Idle);
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card)},
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
-                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
-                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
-                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus)},
+                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card)},
+                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView, getMoneyErrorField, card, moneyAnimationHandler)},
                 { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
 
             var transitions = new List<Transition>()
             {
                 new(StateType.Idle, StateType.InsertCard, () => _currentScreen.ScreenType == ScreenType.InsertCard),
+                
                 new(StateType.InsertCard, StateType.InputPin, () => _currentScreen.ScreenType == ScreenType.InputPin),
-                new(StateType.InputPin, StateType.ChooseOperation, () => _eventBus.WasCalledThisFrame<Card>()),
+                new(StateType.InsertCard, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                
+                new(StateType.InputPin, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
+                new(StateType.InputPin, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                
                 new(StateType.ChooseOperation, StateType.GetBalance, () => _currentScreen.ScreenType == ScreenType.CheckBalance),
                 new(StateType.ChooseOperation, StateType.GetMoney, () => _currentScreen.ScreenType == ScreenType.GetMoney),
+                new(StateType.ChooseOperation, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                
                 new(StateType.GetMoney, StateType.Finish, () => _currentScreen.ScreenType == ScreenType.Finish),
+                new(StateType.GetMoney, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Finish),
+                
                 new(StateType.GetBalance, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
-                new(StateType.Any, StateType.Previous, () => _eventBus.WasCalledThisFrame<ToPrevious>())
+                new(StateType.GetBalance, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
+                
+                new(StateType.Finish, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
+                new(StateType.Finish, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
             };
 
             _cashMachineFSM = new FSM(states, transitions, StateType.Idle);
@@ -68,29 +99,13 @@ namespace CashMachine
 
         private void HandleScreenChange(ScreenType screenType)
         {
-            if (screenType == _currentScreen.ScreenType)
-                return;
-            
             var newScreen = screens.First(screen => screen.ScreenType == screenType);
             
-            _currentScreen.Deactivate();
-
-            _previousScreen = _currentScreen;
+            _currentScreen?.Deactivate();
+            
             _currentScreen = newScreen;
             
-            _currentScreen.Activate();
-        }
-
-        private void HandleToPreviousScreen(ToPrevious toPrevious)
-        {
-            if (_previousScreen == null)
-                return;
-            
-            _currentScreen.Deactivate();
-            
-            _currentScreen = _previousScreen;
-            
-            _currentScreen.Activate();
+            _currentScreen?.Activate();
         }
     }
 }

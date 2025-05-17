@@ -1,3 +1,4 @@
+using CashMachine.Screens;
 using Utilities.EventBus;
 using Utilities.FSM;
 
@@ -31,7 +32,10 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            
+            if (buttonType == ButtonType.ScreenButton14)
+            {
+                _eventBus.Publish(ScreenType.Idle);
+            }
         }
     }
 }

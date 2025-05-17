@@ -12,6 +12,5 @@
         GetMoney = 7,
         Finish = 8,
         Any,
-        Previous
     }
 }

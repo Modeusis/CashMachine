@@ -9,7 +9,6 @@ namespace Utilities.FSM
         
         private List<Transition> _transitions;
         
-        private State _previousState;
         private State _currentState;
 
         public FSM(Dictionary<StateType, State> states, List<Transition> transitions, StateType startingState)
@@ -42,23 +41,6 @@ namespace Utilities.FSM
         
         private void ChangeState(StateType newState)
         {
-            if (newState == StateType.Previous)
-            {
-                if (_previousState == null)
-                    return;
-                
-                var tempPreviousState = _currentState;
-                
-                _currentState?.Exit();
-                
-                _currentState = _previousState;
-                _previousState = tempPreviousState;
-                
-                _currentState?.Enter();
-                
-                return;
-            }
-            
             if (!_states.TryGetValue(newState, out State state))
             {
                 Debug.LogWarning("Cannot change FSM state to null!");
@@ -67,8 +49,7 @@ namespace Utilities.FSM
             }
             
             _currentState?.Exit();
-
-            _previousState = _currentState;
+            
             _currentState = state;
                 
             _currentState?.Enter();
