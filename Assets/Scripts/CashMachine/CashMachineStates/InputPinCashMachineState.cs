@@ -10,7 +10,7 @@ namespace CashMachine.CashMachineStates
     {
         private readonly EventBus _eventBus;
 
-        private Card _currentCard;
+        private Card _card;
         
         private TMP_Text _currentPinView;
         
@@ -27,11 +27,13 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public InputPinCashMachineState(StateType stateType, EventBus eventBus)
+        public InputPinCashMachineState(StateType stateType, EventBus eventBus, Card card)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _card = card;
         }
         
         public override void Enter()
@@ -53,9 +55,9 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            if (buttonType == ButtonType.ScreenButton11)
+            if (buttonType == ButtonType.ScreenButton14)
             {
-                _eventBus.Publish(new ToPrevious());
+                _eventBus.Publish(ScreenType.Idle);
                 
                 return;
             }
@@ -86,7 +88,7 @@ namespace CashMachine.CashMachineStates
 
         private bool ValidatePin()
         {
-            if (_currentCard.GetPin() != _currentPin)
+            if (_card.GetPin() != _currentPin)
                 return false;
             
             return true;

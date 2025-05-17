@@ -34,7 +34,7 @@ namespace CashMachine.CashMachineStates
         {
             if (buttonType == ButtonType.ScreenButton13)
             {
-                _eventBus.Publish(new ToPrevious());
+                _eventBus.Publish(ScreenType.Idle);
                 
                 return;
             }
@@ -48,13 +48,13 @@ namespace CashMachine.CashMachineStates
             {
                 case ButtonType.ScreenButton14:
                 {
-                    _eventBus.Publish(ScreenType.GetMoney);
+                    _eventBus.Publish(ScreenType.CheckBalance);
                     
                     break;
                 }
                 case ButtonType.ScreenButton24:
                 {
-                    _eventBus.Publish(ScreenType.CheckBalance);
+                    _eventBus.Publish(ScreenType.GetMoney);
                     
                     break;
                 }

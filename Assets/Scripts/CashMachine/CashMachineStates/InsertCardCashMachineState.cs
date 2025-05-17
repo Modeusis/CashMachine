@@ -8,13 +8,15 @@ namespace CashMachine.CashMachineStates
     {
         private readonly EventBus _eventBus;
         
-        private Card _currentCard;
+        private readonly Card _card;
         
-        public InsertCardCashMachineState(StateType stateType, EventBus eventBus)
+        public InsertCardCashMachineState(StateType stateType, EventBus eventBus, Card card)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _card = card;
         }
         
         public override void Enter()
@@ -25,13 +27,7 @@ namespace CashMachine.CashMachineStates
 
         public override void Update()
         {
-            if (_currentCard == null)
-                return;
-
-            if (_currentCard.IsInserted())
-            {
-                _eventBus.Publish(ScreenType.InputPin);
-            }
+            
         }
 
         public override void Exit()
@@ -43,17 +39,15 @@ namespace CashMachine.CashMachineStates
         {
             if (buttonType == ButtonType.ScreenButton14)
             {
-                _eventBus.Publish(new ToPrevious());
-                
-                return;
+                _eventBus.Publish(ScreenType.Idle);
             }
         }
         
         private void HandleCardInsert(Card card)
         {
-            _currentCard = card;
-            
             card.InsertCard();
+            
+            _eventBus.Publish(ScreenType.InputPin);
         }
     }
 }

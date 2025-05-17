@@ -28,15 +28,14 @@ namespace CashMachine
         {
             _eventBus = eventBus;
             _eventBus.Subscribe<ScreenType>(HandleScreenChange);
-            _eventBus.Subscribe<ToPrevious>(HandleToPreviousScreen);
             
             HandleScreenChange(ScreenType.Idle);
             
             var states = new Dictionary<StateType, State>()
             {
                 { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus)},
-                { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus)},
-                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus)},
+                { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, card)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
                 { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus)},
                 { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus)},
@@ -90,18 +89,6 @@ namespace CashMachine
             _currentScreen = newScreen;
             
             _currentScreen?.Activate();
-        }
-
-        private void HandleToPreviousScreen(ToPrevious toPrevious)
-        {
-            if (_previousScreen == null)
-                return;
-            
-            _currentScreen.Deactivate();
-            
-            _currentScreen = _previousScreen;
-            
-            _currentScreen.Activate();
         }
     }
 }

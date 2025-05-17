@@ -26,6 +26,16 @@ namespace CashMachine
             _isInserted = true;
         }
 
+        public bool GetMoney(float value)
+        {
+            if (value > _currentBalance)
+                return false;
+            
+            _currentBalance -= value;
+
+            return true;
+        }
+
         public void RemoveCard()
         {
             _isInserted = false;

@@ -1,6 +1,7 @@
 using Interactables;
 using UI;
 using UnityEngine;
+using UnityEngine.Events;
 using Utilities.EventBus;
 using Zenject;
 
@@ -16,6 +17,8 @@ namespace CashMachine
 
         [SerializeField] private string tooltipText;
 
+        [SerializeField] private UnityEvent onClick;
+        
         [Inject]
         private void Initialize(EventBus eventBus, Tooltip tooltip)
         {
@@ -37,6 +40,8 @@ namespace CashMachine
         public void Interact()
         {
             _eventBus.Publish(buttonType);
+            
+            onClick?.Invoke();
         }
     }
 }

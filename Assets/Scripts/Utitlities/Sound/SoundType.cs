@@ -10,5 +10,8 @@ namespace Sounds
         ButtonPress = 5,
         ErrorSound = 6,
         ChequeSound = 7,
+        Steps = 8,
+        CameraSlide = 9,
+        ItemGet = 10
     }
 }
