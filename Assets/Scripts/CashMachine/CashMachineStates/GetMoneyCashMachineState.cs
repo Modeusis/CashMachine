@@ -25,8 +25,6 @@ namespace CashMachine.CashMachineStates
             get => _moneyInput.ToString();
             set
             {
-                Debug.Log(value);
-                
                 if (string.IsNullOrEmpty(value))
                 {
                     _moneyInput = 0;
@@ -38,7 +36,7 @@ namespace CashMachine.CashMachineStates
                 
                 _moneyInput = float.Parse(value);
                 
-                _moneyTextField.text = value + " BYN";
+                _moneyTextField.text = _moneyInput + " BYN";
             }
         }
         
@@ -107,6 +105,13 @@ namespace CashMachine.CashMachineStates
                     return;
                 }
 
+                if (CurrentValue == "0")
+                {
+                    _errorTextField.text = "Введите сумму";
+                    
+                    return;
+                }
+                
                 _moneyAnimationHandler.SetMoney(_card.GetMoney(_moneyInput));
                 _moneyAnimationHandler.HandleMoneyCall();
                 

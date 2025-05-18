@@ -42,13 +42,19 @@ namespace Animations
 
         private float _moneyValue;
 
+        public bool IsReady() => _moneyInstance == null;
+        
         public void SetMoney(float moneyValue)
         {
             if (moneyValue <= 0)
                 return;
             
             _moneyValue = moneyValue;
+            
+            _eventBus.Publish(InteractionType.SpawnMoney);
         }
+
+        public float GetMoneyValue() => _moneyValue; 
         
         public void HandleTakeMoney(InteractionType interactionType)
         {

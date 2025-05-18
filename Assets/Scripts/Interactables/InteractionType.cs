@@ -8,5 +8,6 @@
         GetCard = 3,
         SpawnMoney = 4,
         RemoveCard = 5,
+        CheckBalance = 6,
     }
 }

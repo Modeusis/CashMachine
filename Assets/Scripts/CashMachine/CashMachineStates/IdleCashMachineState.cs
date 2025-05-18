@@ -1,3 +1,4 @@
+using Animations;
 using CashMachine.Screens;
 using Interactables;
 using TMPro;
@@ -16,7 +17,12 @@ namespace CashMachine.CashMachineStates
         
         private readonly Card _card;
         
-        public IdleCashMachineState(StateType stateType, EventBus eventBus, TMP_Text errorText, Card card)
+        private readonly MoneyAnimationHandler _money;
+        
+        private readonly ChequeAnimationHandle _cheque;
+        
+        public IdleCashMachineState(StateType stateType, EventBus eventBus, TMP_Text errorText, Card card,
+            MoneyAnimationHandler moneyAnimationHandler, ChequeAnimationHandle chequeAnimationHandle)
         {
             StateType = stateType;
             
@@ -25,6 +31,10 @@ namespace CashMachine.CashMachineStates
             _card = card;
             
             _errorText = errorText;
+            
+            _money = moneyAnimationHandler;
+            
+            _cheque = chequeAnimationHandle;
         }
         
         public override void Enter()
@@ -51,14 +61,14 @@ namespace CashMachine.CashMachineStates
 
         private void HandleScreenChange(ButtonType buttonType)
         {
-            if (buttonType == ButtonType.ScreenButton14 && _card.IsTaken())
+            if (buttonType == ButtonType.ScreenButton14 && _card.IsTaken() && _cheque.IsReady() && _money.IsReady())
             {
                 _eventBus.Publish(ScreenType.InsertCard);
                 
                 return;
             }
 
-            _errorText.text = "Заберите карту перед тем как продолжить";
+            _errorText.text = "Заберите чек, деньги и карту с прошлой операции, перед тем как продолжить";
         }
     }
 }

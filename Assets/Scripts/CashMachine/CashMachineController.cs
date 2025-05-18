@@ -32,8 +32,9 @@ namespace CashMachine
         [Header("Settings")]
         [SerializeField] private int pinAttemptsAmount = 3;
         
-        [Header("Money animation handler")]
+        [Header("Animation handlers")]
         [SerializeField] private MoneyAnimationHandler moneyAnimationHandler;
+        [SerializeField] private ChequeAnimationHandle chequeAnimationHandler;
         
         private EventBus _eventBus;
         
@@ -51,11 +52,11 @@ namespace CashMachine
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card, moneyAnimationHandler, chequeAnimationHandler)},
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
                 { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
-                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card)},
+                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card, chequeAnimationHandler)},
                 { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView, getMoneyErrorField, card, moneyAnimationHandler)},
                 { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
@@ -75,7 +76,7 @@ namespace CashMachine
                 new(StateType.ChooseOperation, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
                 
                 new(StateType.GetMoney, StateType.Finish, () => _currentScreen.ScreenType == ScreenType.Finish),
-                new(StateType.GetMoney, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Finish),
+                new(StateType.GetMoney, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
                 
                 new(StateType.GetBalance, StateType.Idle, () => _currentScreen.ScreenType == ScreenType.Idle),
                 new(StateType.GetBalance, StateType.ChooseOperation, () => _currentScreen.ScreenType == ScreenType.ChooseOperation),
