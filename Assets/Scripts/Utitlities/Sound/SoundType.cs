@@ -12,6 +12,9 @@ namespace Sounds
         ChequeSound = 7,
         Steps = 8,
         CameraSlide = 9,
-        ItemGet = 10
+        ItemGet = 10,
+        MoneyCount = 11,
+        MoneyLock = 12,
+        WriteDown = 13
     }
 }

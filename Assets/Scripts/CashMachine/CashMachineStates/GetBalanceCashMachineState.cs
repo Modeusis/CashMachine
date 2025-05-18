@@ -1,4 +1,6 @@
+using Animations;
 using CashMachine.Screens;
+using Interactables;
 using TMPro;
 using Utilities.EventBus;
 using Utilities.FSM;
@@ -13,6 +15,8 @@ namespace CashMachine.CashMachineStates
         
         private readonly TMP_Text _cardBalanceText;
 
+        private readonly ChequeAnimationHandle _cheque;
+        
         private string CardBalance
         {
             get => _cardBalanceText.text;
@@ -22,7 +26,7 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public GetBalanceCashMachineState(StateType stateType, EventBus eventBus, TMP_Text balanceView, Card card)
+        public GetBalanceCashMachineState(StateType stateType, EventBus eventBus, TMP_Text balanceView, Card card, ChequeAnimationHandle cheque)
         {
             StateType = stateType;
 
@@ -31,6 +35,8 @@ namespace CashMachine.CashMachineStates
             _card = card;
             
             _cardBalanceText = balanceView;
+            
+            _cheque = cheque;
         }
         
         public override void Enter()
@@ -38,6 +44,8 @@ namespace CashMachine.CashMachineStates
             _eventBus.Subscribe<ButtonType>(HandleButtonInput);
             
             CardBalance = _card.CurrentBalance().ToString();
+            
+            _eventBus.Publish<InteractionType>(InteractionType.CheckBalance);
         }
 
         public override void Update()
@@ -52,7 +60,7 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
-            if (buttonType == ButtonType.ScreenButton14)
+            if (buttonType == ButtonType.ScreenButton14 && _cheque.IsReady())
             {
                 _eventBus.Publish(ScreenType.ChooseOperation);
                 
