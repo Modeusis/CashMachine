@@ -11,6 +11,8 @@ namespace UI
         [Inject] private EventBus _eventBus;
         [Inject] private SoundService _soundService;
         
+        [SerializeField] private string writeDownSoundId = "WriteDown";
+        
         [SerializeField] private GameObject chequeTable;
         [SerializeField] private OperationTableElement chequeElementPrefab;
 
@@ -33,7 +35,7 @@ namespace UI
         {
             var chequeElement = Instantiate(chequeElementPrefab, chequeTable.transform);
             
-            _soundService.Play2DSfx(SoundType.WriteDown, 1f);
+            _soundService.Play(SoundType.Sound, writeDownSoundId);
             
             chequeElement.Initialize(chequeData.Date.ToString("dd/MM/yyyy HH:mm:ss"), chequeData.Operation);
         }

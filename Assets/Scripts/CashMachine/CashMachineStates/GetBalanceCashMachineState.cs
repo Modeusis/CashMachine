@@ -1,6 +1,7 @@
 using Animations;
 using CashMachine.Screens;
 using Interactables;
+using Sounds;
 using TMPro;
 using Utilities.EventBus;
 using Utilities.FSM;
@@ -10,6 +11,10 @@ namespace CashMachine.CashMachineStates
     public class GetBalanceCashMachineState : State
     {
         private readonly EventBus _eventBus;
+        
+        private readonly SoundService _soundService;
+
+        private readonly string _errorSoundId;
         
         private readonly Card _card;
         
@@ -26,11 +31,15 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public GetBalanceCashMachineState(StateType stateType, EventBus eventBus, TMP_Text balanceView, Card card, ChequeAnimationHandle cheque)
+        public GetBalanceCashMachineState(StateType stateType, EventBus eventBus, TMP_Text balanceView, Card card,
+            ChequeAnimationHandle cheque, SoundService soundService, string errorSoundId)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _soundService = soundService;
+            _errorSoundId = errorSoundId;
             
             _card = card;
             
@@ -45,7 +54,7 @@ namespace CashMachine.CashMachineStates
             
             CardBalance = _card.CurrentBalance().ToString();
             
-            _eventBus.Publish<InteractionType>(InteractionType.CheckBalance);
+            _eventBus.Publish(InteractionType.CheckBalance);
         }
 
         public override void Update()
@@ -60,6 +69,13 @@ namespace CashMachine.CashMachineStates
 
         private void HandleButtonInput(ButtonType buttonType)
         {
+            if (buttonType == ButtonType.ScreenButton14 && !_cheque.IsReady())
+            {
+                _soundService.Play(SoundType.Sound, _errorSoundId);
+                
+                return;
+            }
+            
             if (buttonType == ButtonType.ScreenButton14 && _cheque.IsReady())
             {
                 _eventBus.Publish(ScreenType.ChooseOperation);

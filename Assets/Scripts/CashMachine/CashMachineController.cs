@@ -4,8 +4,10 @@ using System.Linq;
 using Animations;
 using CashMachine.CashMachineStates;
 using CashMachine.Screens;
+using Sounds;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using Utilities.EventBus;
 using Utilities.FSM;
 using Zenject;
@@ -16,6 +18,10 @@ namespace CashMachine
     {
         [SerializeField] private List<ScreenSetup> screens;
 
+        [Header("Sounds")]
+        [SerializeField] private string successSoundId = "OperationSuccess";
+        [SerializeField] private string failureSoundId = "OperationFailure";
+        
         [Header("Card")]
         [SerializeField] private Card card;
         
@@ -43,7 +49,7 @@ namespace CashMachine
         private ScreenSetup _currentScreen;
         
         [Inject]
-        private void Initialize(EventBus eventBus)
+        private void Initialize(EventBus eventBus, SoundService soundService)
         {
             _eventBus = eventBus;
             _eventBus.Subscribe<ScreenType>(HandleScreenChange);
@@ -52,12 +58,12 @@ namespace CashMachine
             
             var states = new Dictionary<StateType, State>()
             {
-                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card, moneyAnimationHandler, chequeAnimationHandler)},
+                { StateType.Idle, new IdleCashMachineState(StateType.Idle, _eventBus, idleErrorField, card, moneyAnimationHandler, chequeAnimationHandler, soundService, failureSoundId)},
                 { StateType.InsertCard, new InsertCardCashMachineState(StateType.InsertCard, _eventBus, card)},
-                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount)},
+                { StateType.InputPin, new InputPinCashMachineState(StateType.InputPin, _eventBus, pinView, pinErrorField, card, pinAttemptsAmount, soundService, failureSoundId)},
                 { StateType.ChooseOperation, new ChooseOperationCashMachineState(StateType.ChooseOperation, _eventBus)},
-                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card, chequeAnimationHandler)},
-                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView, getMoneyErrorField, card, moneyAnimationHandler)},
+                { StateType.GetBalance, new GetBalanceCashMachineState(StateType.GetBalance, _eventBus, balanceView, card, chequeAnimationHandler, soundService, failureSoundId)},
+                { StateType.GetMoney, new GetMoneyCashMachineState(StateType.GetMoney, _eventBus, moneyView, getMoneyErrorField, card, moneyAnimationHandler, soundService, failureSoundId, successSoundId)},
                 { StateType.Finish, new FinishCashMachineState(StateType.Finish, _eventBus)},
             };
 

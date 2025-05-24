@@ -1,4 +1,5 @@
 ﻿using Interactables;
+using Sounds;
 using UI;
 using UnityEngine;
 using Utilities.EventBus;
@@ -10,6 +11,9 @@ namespace Animations
     { 
         [Inject] private EventBus _eventBus;
         [Inject] private Tooltip _tooltip;
+        [Inject] private SoundService _soundService;
+        
+        [SerializeField] private string printChequeSoundId = "ChequePrint";
         
         [SerializeField] private ChequeInteractable chequePrefab;
         
@@ -44,6 +48,8 @@ namespace Animations
             var chequeInteractable = Instantiate(chequePrefab, transform);
             
             _chequeInstance = chequeInteractable.gameObject;
+            
+            _soundService.Play(SoundType.Sound, printChequeSoundId, _chequeInstance.transform, 2f);
             
             chequeInteractable.Initialize(_eventBus, _tooltip, operation);
         }

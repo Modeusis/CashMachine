@@ -4622,6 +4622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 792e04d17e7c48508e1928c74efb19b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  printChequeSoundId: ChequePrint
   chequePrefab: {fileID: 1295769602}
   moneyAnimationHandler: {fileID: 1665654918}
 --- !u!1 &804170727
@@ -6562,7 +6563,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1416187263}
   m_OnClick:
     m_PersistentCalls:
@@ -7867,6 +7868,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b56e8b6daef344ccb34beb5d1af3c903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moneyTakeSoundId: MoneyTake
+  moneyCountSoundId: MoneyCount
   moneyPrefab: {fileID: 2319026222772206203, guid: 3b984d33e9d7e334083df689de5e20e6, type: 3}
   moneyLock: {fileID: 143577312757022968}
   lockToggleDuration: 0.8
@@ -8612,7 +8615,7 @@ GameObject:
   - component: {fileID: 1873033389}
   - component: {fileID: 1873033390}
   m_Layer: 5
-  m_Name: '[ChequeTable]'
+  m_Name: '[UIMode]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8655,6 +8658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40827a138faa4a0dada22e6180b19cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  writeDownSoundId: WriteDown
   chequeTable: {fileID: 374680745}
   chequeElementPrefab: {fileID: -5257782849846141214, guid: 7ac74d1815769494fae39e60a8ef0bb0, type: 3}
   closeButton: {fileID: 484343673}
@@ -9340,6 +9344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2139946834}
   - component: {fileID: 2139946835}
+  - component: {fileID: 2139946836}
   m_Layer: 0
   m_Name: SoundInstaller
   m_TagString: Untagged
@@ -9374,12 +9379,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3371d85c2c2a47578d027b80355be37c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startBackgroundSound: 0
-  _minPoolSize: 1
-  _maxPoolSize: 10
-  _audioPlayer: {fileID: 0}
-  _musicSounds: {fileID: 11400000, guid: 9c3ab7fc87fcb0f42b2a2e1436e724bd, type: 2}
-  _sfxSounds: {fileID: 11400000, guid: 99186bfea386524498155f63b29a93ac, type: 2}
+  sfxDataSetup: {fileID: 11400000, guid: 99186bfea386524498155f63b29a93ac, type: 2}
+  musicDataSetup: {fileID: 11400000, guid: 9c3ab7fc87fcb0f42b2a2e1436e724bd, type: 2}
+  soundPlayer: {fileID: 5408735623231873671, guid: 2034d74ce7098df43a1eebaee7a03053, type: 3}
+  musicPlayer: {fileID: 5408735623231873671, guid: a030c251331e0ec4ead86f40dc107a29, type: 3}
+  minPoolSize: 1
+  maxPoolSize: 30
+--- !u!114 &2139946836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139946833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee7ffdddf8994c37b735c4177f27336b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sadMusicId: SadPiano
+  moneyMusicId: MoneyMusic
 --- !u!33 &54242692548787556
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -10376,6 +10395,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1794338447135219601}
   cardInteractionHandler: {fileID: 1794338447135219602}
+  cardSoundInsertId: CardInsert
+  cardSoundTakeId: CardTake
+  cardSoundRemoveId: CardRemove
   player: {fileID: 330585543}
   cardHolder: {fileID: 5043695762691135711}
   cardInsertPosition: {x: 0.36199996, y: 1.4873588, z: -0.4500002}
@@ -11286,6 +11308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!23 &3594653065111847397
@@ -12285,6 +12308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1 &5362959384563950397
@@ -12371,6 +12395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1 &5383647258545780864
@@ -12653,6 +12678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!23 &6016457258332725588
@@ -12764,6 +12790,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!23 &6065227066317984018
@@ -12875,6 +12902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1 &6070640364217663119
@@ -13043,6 +13071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!4 &6344596101000712023
@@ -13384,6 +13413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!23 &7074775005345481954
@@ -13624,6 +13654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!4 &7364102239142340181
@@ -13813,6 +13844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!33 &7431679152275873869
@@ -13901,6 +13933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!4 &7646477913733416331
@@ -14002,6 +14035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1 &7705695098735872107
@@ -14153,6 +14187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!1 &7789564589316341674
@@ -14244,6 +14279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!4 &7884032362270649572
@@ -14334,6 +14370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!1 &8013586990793060702
@@ -14445,6 +14482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!23 &8195643819764725742
@@ -14625,6 +14663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!33 &8372236931944171641
@@ -14813,6 +14852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!33 &8571053208577624114
@@ -14896,6 +14936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577dd440db1846ec9f5f60078a8c26ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalButtonClickId: ButtonPress
   clickDuration: 0.5
   zOffset: 0.00125
 --- !u!33 &8726504566463811008
@@ -14955,6 +14996,8 @@ MonoBehaviour:
     <Screen>k__BackingField: {fileID: 230036112}
   - <ScreenType>k__BackingField: 6
     <Screen>k__BackingField: {fileID: 1446960358}
+  successSoundId: OperationSuccess
+  failureSoundId: OperationFailure
   card: {fileID: 1794338447135219601}
   pinView: {fileID: 939985160}
   moneyView: {fileID: 33946400}
@@ -15196,6 +15239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonConfirm
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!23 &8988490467077079380
@@ -15307,6 +15351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1 &9214977578512311725
@@ -15405,6 +15450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df29fe6bb146404087c76e66dec8b1c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numButtonClickId: NumButtonClick
   clickDuration: 0.3
   yOffset: 0.000325
 --- !u!1660057539 &9223372036854775807

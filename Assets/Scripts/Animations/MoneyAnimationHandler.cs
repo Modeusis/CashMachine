@@ -17,6 +17,10 @@ namespace Animations
         [Inject] private EventBus _eventBus;
         [Inject] private Tooltip _tooltip;
         
+        [Header("Sounds")]
+        [SerializeField] private string moneyTakeSoundId = "MoneyTake";
+        [SerializeField] private string moneyCountSoundId = "MoneyCount";
+        
         [Header("Prefab")] 
         [SerializeField] private GameObject moneyPrefab;
 
@@ -65,7 +69,9 @@ namespace Animations
             _moneyInstance?.transform.DOKill();
             
             Destroy(_moneyInstance);
-
+            
+            _soundService.Play(SoundType.Sound, moneyTakeSoundId, transform, 2f);
+            
             moneyLock.DOLocalMove(moneyLockStartPosition, lockToggleDuration);
             moneyLock.DOLocalRotate(moneyLockStartRotation, lockToggleDuration);
             
@@ -101,6 +107,8 @@ namespace Animations
             _eventBus.Unsubscribe<InteractionType>(HandleTakeMoney);
             
             _moneyInstance = Instantiate(moneyPrefab, transform);
+            
+            _soundService.Play(SoundType.Sound, moneyCountSoundId, transform, 2f);
             
             _moneyInstance.layer = LayerMask.NameToLayer("Toggled");
             

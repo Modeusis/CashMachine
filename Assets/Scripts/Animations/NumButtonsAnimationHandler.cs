@@ -10,6 +10,8 @@ namespace Animations
     {
         [Inject] private SoundService _soundService;
         
+        [SerializeField] private string numButtonClickId = "NumButtonClick";
+        
         [SerializeField] private float clickDuration = 0.3f;
         [SerializeField] private float yOffset = 0.000325f;
 
@@ -28,7 +30,7 @@ namespace Animations
             
             _sequence = DOTween.Sequence();
             
-            _soundService.Play3DSfx(SoundType.NumInput, transform, 2f, 1f);
+            _soundService.Play(SoundType.Sound, numButtonClickId, transform, 2f);
             
             _sequence.Append(transform.DOLocalMoveY(_startYPosition - yOffset, clickDuration /2 ));
             _sequence.Append(transform.DOLocalMoveY(_startYPosition, clickDuration / 2));

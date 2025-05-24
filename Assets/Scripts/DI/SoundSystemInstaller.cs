@@ -8,21 +8,26 @@ namespace DI
     {
         private SoundService _soundService;
         
-        [SerializeField] private SoundType startBackgroundSound;
+        [SerializeField] private SoundDataSetup sfxDataSetup;
+        [SerializeField] private SoundDataSetup musicDataSetup;
         
-        [SerializeField] private int _minPoolSize = 1;
-        [SerializeField] private int _maxPoolSize = 10;
+        [SerializeField] private AudioPlayer soundPlayer;
+        [SerializeField] private AudioPlayer musicPlayer;
         
-        [SerializeField] private AudioPlayer _audioPlayer;
-        
-        [SerializeField] private SoundDataSetup _musicSounds;
-        [SerializeField] private SoundDataSetup _sfxSounds;
-        
+        [SerializeField] private int minPoolSize = 1;
+        [SerializeField] private int maxPoolSize = 30;
+
         public override void InstallBindings()
         {
-            _soundService = new SoundService(_audioPlayer, _sfxSounds, _musicSounds, transform, _minPoolSize, _maxPoolSize);
+            _soundService = new SoundService(soundPlayer, musicPlayer, sfxDataSetup, musicDataSetup,
+                transform, minPoolSize, maxPoolSize);
             
             Container.Bind<SoundService>().FromInstance(_soundService).AsSingle().NonLazy();
+        }
+        
+        private void OnDestroy()
+        {
+            _soundService.Dispose();
         }
     }
 }

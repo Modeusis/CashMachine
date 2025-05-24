@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b47811c943f48808b0a9062eb4d902e, type: 3}
   m_Name: SoundMusic
   m_EditorClassIdentifier: 
-  <SoundDataList>k__BackingField: []
+  <SoundDataList>k__BackingField:
+  - <Type>k__BackingField: SadPiano
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 4cfc85b6663e8be438dbd7e4e9da5f02, type: 3}
+  - <Type>k__BackingField: MoneyMusic
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 957c7c44be1368947bc121d2994b0276, type: 3}

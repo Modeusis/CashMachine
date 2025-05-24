@@ -18,6 +18,11 @@ namespace Animations
         [SerializeField] private Card card;
         [SerializeField] private CardInteractable cardInteractionHandler;
         
+        [Header("Sounds")]
+        [SerializeField] private string cardSoundInsertId = "CardInsert";
+        [SerializeField] private string cardSoundTakeId = "CardTake";
+        [SerializeField] private string cardSoundRemoveId = "CardRemove";
+        
         [Header("Parents")]
         [SerializeField] private GameObject player;
         [SerializeField] private GameObject cardHolder;
@@ -74,7 +79,7 @@ namespace Animations
                     {
                         card.InsertCard();
                         
-                        // _eventBus.Publish(new CameraUnblocker());
+                        _soundService.Play(SoundType.Sound, cardSoundInsertId, transform, 2f);
                     });
             });
         }
@@ -84,6 +89,8 @@ namespace Animations
             transform.DOKill();
             
             card.RemoveCard();
+            
+            _soundService.Play(SoundType.Sound, cardSoundRemoveId, transform, 2f);
             
             cardInteractionHandler.Activate();
             
@@ -95,6 +102,8 @@ namespace Animations
             transform.DOKill();
             
             card.TakeCard();
+            
+            _soundService.Play(SoundType.Sound, cardSoundTakeId, transform, 2f);
             
             cardInteractionHandler.Deactivate();
             
