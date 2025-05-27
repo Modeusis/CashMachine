@@ -1,5 +1,6 @@
 using Animations;
 using CashMachine.Screens;
+using Sounds;
 using TMPro;
 using UnityEngine;
 using Utilities.EventBus;
@@ -11,6 +12,11 @@ namespace CashMachine.CashMachineStates
     {
         private readonly EventBus _eventBus;
 
+        private readonly SoundService _soundService;
+
+        private readonly string _errorSoundId;
+        private readonly string _successSoundId;
+        
         private readonly Card _card;
         
         private readonly TMP_Text _moneyTextField;
@@ -41,11 +47,16 @@ namespace CashMachine.CashMachineStates
         }
         
         public GetMoneyCashMachineState(StateType stateType, EventBus eventBus, TMP_Text moneyTextField, TMP_Text errorTextField,
-            Card card, MoneyAnimationHandler moneyAnimationHandler)
+            Card card, MoneyAnimationHandler moneyAnimationHandler, SoundService soundService, string errorSoundId, string successSoundId)
         {
             StateType = stateType;
 
             _eventBus = eventBus;
+            
+            _soundService = soundService;
+            
+            _errorSoundId = errorSoundId;
+            _successSoundId = successSoundId;
             
             _moneyTextField = moneyTextField;
             _errorTextField = errorTextField;
@@ -101,6 +112,8 @@ namespace CashMachine.CashMachineStates
                 if (!ValidateInput())
                 {
                     _errorTextField.text = "Недостаточно средств";
+
+                    _soundService.Play(SoundType.Sound, _errorSoundId);
                     
                     return;
                 }
@@ -109,11 +122,15 @@ namespace CashMachine.CashMachineStates
                 {
                     _errorTextField.text = "Введите сумму";
                     
+                    _soundService.Play(SoundType.Sound, _errorSoundId);
+                    
                     return;
                 }
                 
                 _moneyAnimationHandler.SetMoney(_card.GetMoney(_moneyInput));
                 _moneyAnimationHandler.HandleMoneyCall();
+                
+                _soundService.Play(SoundType.Sound, _successSoundId);
                 
                 _eventBus.Publish(ScreenType.Finish);
             }

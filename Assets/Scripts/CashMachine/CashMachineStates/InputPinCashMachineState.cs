@@ -1,5 +1,6 @@
 using System;
 using CashMachine.Screens;
+using Sounds;
 using TMPro;
 using UnityEngine;
 using Utilities.EventBus;
@@ -10,6 +11,10 @@ namespace CashMachine.CashMachineStates
     public class InputPinCashMachineState : State
     {
         private readonly EventBus _eventBus;
+        
+        private readonly SoundService _soundService;
+
+        private readonly string _errorSoundId;
         
         private readonly int _attemptsAmount;
         
@@ -33,11 +38,15 @@ namespace CashMachine.CashMachineStates
             }
         }
         
-        public InputPinCashMachineState(StateType stateType, EventBus eventBus, TMP_Text pinView, TMP_Text errorPinView, Card card, int attemptsAmount)
+        public InputPinCashMachineState(StateType stateType, EventBus eventBus, TMP_Text pinView, TMP_Text errorPinView,
+            Card card, int attemptsAmount, SoundService soundService, string failureSoundId)
         {
             StateType = stateType;
             
             _eventBus = eventBus;
+            
+            _soundService = soundService;
+            _errorSoundId = failureSoundId;
             
             _attemptsAmount = attemptsAmount;
             
@@ -97,6 +106,8 @@ namespace CashMachine.CashMachineStates
             {
                 if (!ValidatePin())
                 {
+                    _soundService.Play(SoundType.Sound, _errorSoundId);
+                    
                     if (_currentAttempts <= 0)
                     {
                         _eventBus.Publish(ScreenType.Idle);

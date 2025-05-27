@@ -12,4 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b47811c943f48808b0a9062eb4d902e, type: 3}
   m_Name: SoundSFX
   m_EditorClassIdentifier: 
-  <SoundDataList>k__BackingField: []
+  <SoundDataList>k__BackingField:
+  - <Type>k__BackingField: ButtonPress
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 3a435c9ac94420947b7e7facce838270, type: 3}
+    - {fileID: 8300000, guid: 643414e9e5a1b9849ae14ffc5e882195, type: 3}
+    - {fileID: 8300000, guid: fdaeaf147e2843643a4a7000c1bc995c, type: 3}
+  - <Type>k__BackingField: NumButtonClick
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 167b767fc0f8e2b4d990117b6431f9a6, type: 3}
+    - {fileID: 8300000, guid: 8140d7aa8a5afd542860babd6ed05c21, type: 3}
+    - {fileID: 8300000, guid: 59cc404b5da47584aaf5d0ed7a023738, type: 3}
+    - {fileID: 8300000, guid: 38d0e3874faca50459d87d7b14534ec7, type: 3}
+  - <Type>k__BackingField: NumButtonConfirm
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 1a70ce49df832514e8096b551460a947, type: 3}
+  - <Type>k__BackingField: ChequePrint
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 88218362ad4bce049acb2e168db1951a, type: 3}
+  - <Type>k__BackingField: OperationSuccess
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 14306aa69b0f04c48a3e743b8a1cb40a, type: 3}
+  - <Type>k__BackingField: OperationFailure
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: a4281572f374e014094e3b5e35112f1e, type: 3}
+  - <Type>k__BackingField: WriteDown
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 8cef599334fcd564bb4d45c64abc467d, type: 3}
+  - <Type>k__BackingField: CardTake
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 4326a62775a0e494f9ba507decd3bd38, type: 3}
+  - <Type>k__BackingField: CardInsert
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 71527b2c9f53d5c47a642784ba9d3a72, type: 3}
+  - <Type>k__BackingField: CardRemove
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 79c07a4ce6331d143810529b6657c9d9, type: 3}
+  - <Type>k__BackingField: MoneyTake
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: 0bd60394c0f13c144a678180d1159e44, type: 3}
+  - <Type>k__BackingField: MoneyCount
+    <Sound>k__BackingField:
+    - {fileID: 8300000, guid: b2458f4b40bac394b8ac1735b09d08b1, type: 3}

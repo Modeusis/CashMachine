@@ -9,6 +9,8 @@ namespace Animations
     {
         [Inject] private SoundService _soundService;
         
+        [SerializeField] private string verticalButtonClickId = "ButtonPress";
+        
         [SerializeField] private float clickDuration = 0.5f;
         [SerializeField] private float zOffset = 0.002f;
         
@@ -27,7 +29,7 @@ namespace Animations
             
             _sequence = DOTween.Sequence();
 
-            _soundService.Play3DSfx(SoundType.ButtonPress, transform, 2f, 1f);
+            _soundService.Play(SoundType.Sound, verticalButtonClickId, transform, 4f);
             
             _sequence.Append(transform.DOLocalMoveZ(_startZPosition + zOffset, clickDuration /2 ));
             _sequence.Append(transform.DOLocalMoveZ(_startZPosition, clickDuration / 2));
